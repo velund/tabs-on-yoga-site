@@ -1,27 +1,27 @@
 window.addEventListener('DOMContentLoaded',function(){
     'use strict';
-    let infoTabs = document.querySelectorAll('.info-header-tab'),
-        infoTabContents = document.querySelectorAll('.info-tabcontent'),
-        infoHeader = document.querySelector('.info-header');
+    let Tabs = document.querySelectorAll('.info-header-tab'),
+        TabsContents = document.querySelectorAll('.info-tabcontent'),
+        tabsWrapper = document.querySelector('.info-header');
     
     function hideTabConent (a){
-        for (let i=a; i<infoTabContents.length; i++){
-            infoTabContents[i].classList.remove('show');
-            infoTabContents[i].classList.add('hide');
+        for (let i=a; i<TabsContents.length; i++){
+            TabsContents[i].classList.remove('show');
+            TabsContents[i].classList.add('hide');
         }
     }
     hideTabConent(1);
     function showTabContent(b){
-        if (infoTabContents[b].classList.contains('hide')){
-            infoTabContents[b].classList.remove('hide');
-            infoTabContents[b].classList.add('show'); 
+        if (TabsContents[b].classList.contains('hide')){
+            TabsContents[b].classList.remove('hide');
+            TabsContents[b].classList.add('show'); 
         }
     }
-    infoHeader.addEventListener('click', function(e){
+    tabsWrapper.addEventListener('click', function(e){
         let target = e.target;
         if (target && target.classList.contains('info-header-tab')){
-            for (let i=0; i<infoTabs.length; i++){
-                if (target == infoTabs[i]){
+            for (let i=0; i<Tabs.length; i++){
+                if (target == Tabs[i]){
                     hideTabConent(0);
                     showTabContent(i);
                     break;
