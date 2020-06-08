@@ -71,12 +71,19 @@ function setClock(id, endtime){
         minutes = t.querySelector('.minutes'),
         hours = t.querySelector('.hours'),
         days = t.querySelector('.days');
-    let timeInterval = setInterval(updateClock, 1000);
+    if (calcTime(endtime).milliseconds>1000){
+        let timeInterval = setInterval(updateClock, 1000);
+        console.log('a');
+    }else {
+        updateClock();
+    }
+    
     function updateClock(){
         seconds.textContent = addZero(calcTime(endtime).seconds);
         minutes.textContent = addZero(calcTime(endtime).minutes);
         hours.textContent = addZero(calcTime(endtime).hours);
         days.textContent = addZero(calcTime(endtime).days);
+        
     }
     function addZero(num){
         if (num<10) {
