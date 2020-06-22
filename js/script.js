@@ -4,8 +4,30 @@ window.addEventListener('DOMContentLoaded',function(){
         TabsContents = document.querySelectorAll('.info-tabcontent'),
         TabsWrapper = document.querySelector('.info-header');
     toggleTabs(Tabs, TabsContents, TabsWrapper);
-    //setClock('timer', deadline);
-    
+    setClock('timer', deadline);
+    //modal
+    let modal =  document.querySelector('.overlay'),
+    Xclose = document.querySelector('.popup-close'),
+    moreBTN = document.querySelector('.more');
+
+    moreBTN.addEventListener('click', function(){
+    modal.style.display = 'block';
+    this.classList.add('more-splash');
+    //document.body.style.overflow = 'hidden';
+    });
+    Xclose.addEventListener('click', function(){
+    modal.style.display = 'none';
+    moreBTN.classList.remove('more-splash');
+    //document.body.style.overflow = '';
+    });
+
+    let mainForm = document.querySelector('.main-form'),
+        form = document.getElementById('form'),
+        inputs = document.querySelectorAll('input'),
+        statusMessage = document.createElement('div');
+
+    postToServer(mainForm, inputs, statusMessage);
+    postToServer(form, inputs, statusMessage);
 
 });
 
@@ -42,8 +64,8 @@ function toggleTabs(tabs, contents, tabsWrapper){
 }
 
 // Timer function
-
-let deadline = '2020-06-09';
+'use strict';
+let deadline = '2020-08-09';
 
 function calcTime(endtime){
     let milsec = Date.parse(endtime) - Date.parse(new Date()),
@@ -91,3 +113,52 @@ function setClock(id, endtime){
         }else {return num;}
     }
 }
+
+
+
+//post to server
+function postToServer(mainForm, inputs, statusMessage){
+    let message = {
+        loading: 'loading...',
+        loaded: 'Your request successfully sent',
+        failure: ' problems occured, please try again '
+    };
+    
+    
+    statusMessage.classList.add('status');
+
+    mainForm.addEventListener('submit', function(e){
+        e.preventDefault();
+        mainForm.appendChild(statusMessage);
+        let request = new XMLHttpRequest();
+        request.open('POST', 'server.php');
+        request.setRequestHeader('Content-type','application-json','charset=utf-8');
+        let object = {};
+        let formdata = new FormData(mainForm);
+        formdata.forEach(function(value, key){
+            object[key] = value;
+        });
+        let jsonFromFormData = JSON.stringify(object);
+        request.send(jsonFromFormData);
+        request.addEventListener('readystatechange', function(){
+            if (request.readyState < 4){
+                statusMessage.textContent = message.loading;
+            }else {
+                if (request.readyState === 4 && request.status == 200){
+                    statusMessage.textContent= message.loaded;
+                }else {
+                    statusMessage.innerHTML = message.failure;
+                }
+            }
+        for (let i=0; i < inputs.length; i++){
+            inputs[i].value = '';
+        }
+        });
+    
+    });
+}
+
+
+ 
+
+
