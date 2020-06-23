@@ -4,8 +4,30 @@ window.addEventListener('DOMContentLoaded',function(){
         TabsContents = document.querySelectorAll('.info-tabcontent'),
         TabsWrapper = document.querySelector('.info-header');
     toggleTabs(Tabs, TabsContents, TabsWrapper);
-    //setClock('timer', deadline);
-    
+    setClock('timer', deadline);
+    //modal
+    let modal =  document.querySelector('.overlay'),
+    Xclose = document.querySelector('.popup-close'),
+    moreBTN = document.querySelector('.more');
+
+    moreBTN.addEventListener('click', function(){
+    modal.style.display = 'block';
+    this.classList.add('more-splash');
+    //document.body.style.overflow = 'hidden';
+    });
+    Xclose.addEventListener('click', function(){
+    modal.style.display = 'none';
+    moreBTN.classList.remove('more-splash');
+    //document.body.style.overflow = '';
+    });
+
+    let mainForm = document.querySelector('.main-form'),
+        form = document.getElementById('form'),
+        inputs = document.querySelectorAll('input'),
+        statusMessage = document.createElement('div');
+
+    postToServer(mainForm, inputs, statusMessage);
+    postToServer(form, inputs, statusMessage);
 
 });
 
@@ -42,8 +64,8 @@ function toggleTabs(tabs, contents, tabsWrapper){
 }
 
 // Timer function
-
-let deadline = '2020-06-09';
+'use strict';
+let deadline = '2020-08-09';
 
 function calcTime(endtime){
     let milsec = Date.parse(endtime) - Date.parse(new Date()),
@@ -64,7 +86,7 @@ function calcTime(endtime){
     return timeData;
 
 }
-console.log(calcTime(deadline).hours);
+console.log(calcTime(deadline).days);
 function setClock(id, endtime){
     let t = document.getElementById(id),
         seconds = t.querySelector('.seconds'),
@@ -73,7 +95,7 @@ function setClock(id, endtime){
         days = t.querySelector('.days');
     if (calcTime(endtime).milliseconds>1000){
         let timeInterval = setInterval(updateClock, 1000);
-        console.log('a');
+        
     }else {
         updateClock();
     }
@@ -91,3 +113,57 @@ function setClock(id, endtime){
         }else {return num;}
     }
 }
+
+
+
+//post to server
+function postToServer(mainForm, inputs, statusMessage){
+    let message = {
+        loading: 'loading...',
+        loaded: 'Your request successfully sent',
+        failure: ' problems occured, please try again '
+    };
+    
+    
+    statusMessage.classList.add('status');
+
+    mainForm.addEventListener('submit', function(e){
+        e.preventDefault();
+        mainForm.appendChild(statusMessage);
+        let formdata = new FormData(mainForm);
+        function Poster(data){
+            return new Promise(function(fullfil, reject){
+                let request = new XMLHttpRequest();
+                request.open('POST', 'server.php');
+                request.setRequestHeader('Content-type','application-json','charset=utf-8');
+                request.addEventListener('readystatechange', function(){
+                    if (request.readyState < 4){
+                        fullfil();
+                    }else {
+                        if (request.readyState === 4 && request.status == 200){
+                            fullfil();
+                        }else {
+                            reject();
+                        }
+                    }
+                }); //event listener to request
+                request.send(data);
+            }); //promise
+
+        } // Poster func (returns promise)
+        function clearData(){
+            for (let i=0; i < inputs.length; i++){
+                inputs[i].value = '';
+            }
+        }
+        Poster(formdata).then(function(){console.log('loading'); statusMessage.textContent = message.loading;})
+                        .then(function(){console.log('loaded'); statusMessage.textContent = message.loaded;})
+                        .catch(function(){statusMessage.textContent = message.failure;})
+                        .then(clearData);
+    }); //eventlistener of main-form
+} //postToServer func
+
+
+ 
+
+
