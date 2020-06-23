@@ -113,6 +113,7 @@ function setClock(id, endtime){
         }else {return num;}
     }
 }
+<<<<<<< HEAD
 
 
 
@@ -167,3 +168,55 @@ function postToServer(mainForm, inputs, statusMessage){
  
 
 
+||||||| e366286
+=======
+
+
+
+//post to server
+function postToServer(mainForm, inputs, statusMessage){
+    let message = {
+        loading: 'loading...',
+        loaded: 'Your request successfully sent',
+        failure: ' problems occured, please try again '
+    };
+    
+    
+    statusMessage.classList.add('status');
+
+    mainForm.addEventListener('submit', function(e){
+        e.preventDefault();
+        mainForm.appendChild(statusMessage);
+        let request = new XMLHttpRequest();
+        request.open('POST', 'server.php');
+        request.setRequestHeader('Content-type','application-json','charset=utf-8');
+        let object = {};
+        let formdata = new FormData(mainForm);
+        formdata.forEach(function(value, key){
+            object[key] = value;
+        });
+        let jsonFromFormData = JSON.stringify(object);
+        request.send(jsonFromFormData);
+        request.addEventListener('readystatechange', function(){
+            if (request.readyState < 4){
+                statusMessage.textContent = message.loading;
+            }else {
+                if (request.readyState === 4 && request.status == 200){
+                    statusMessage.textContent= message.loaded;
+                }else {
+                    statusMessage.innerHTML = message.failure;
+                }
+            }
+        for (let i=0; i < inputs.length; i++){
+            inputs[i].value = '';
+        }
+        });
+    
+    });
+}
+
+
+ 
+
+
+>>>>>>> ba376b059d3ad659a30aa73fb5eb0131e5ae99c7
