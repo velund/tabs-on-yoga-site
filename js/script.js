@@ -1,10 +1,65 @@
 window.addEventListener('DOMContentLoaded',function(){
     'use strict';
+
+    //toggle tabs
     let Tabs = document.querySelectorAll('.info-header-tab'),
         TabsContents = document.querySelectorAll('.info-tabcontent'),
         TabsWrapper = document.querySelector('.info-header');
     toggleTabs(Tabs, TabsContents, TabsWrapper);
     setClock('timer', deadline);
+
+    // slider
+    let slides = document.querySelectorAll('.slider-item'),
+        dotsWrapper = document.querySelector('.slider-dots'),
+        dots = document.querySelectorAll('.dot'),
+        prevBtn = document.querySelector('.prev'),
+        nextBtn =  document.querySelector('.next');
+
+        
+    activateSlider( slides, dotsWrapper, dots, prevBtn, nextBtn);
+
+    //calculator
+    let total = document.getElementById('total'),
+        numPersons  = document.getElementsByClassName('counter-block-input')[0],
+        numDays = document.getElementsByClassName('counter-block-input')[1],
+        selector = document.getElementById('select'),
+        personsSum = 0,
+        daysSum = 0,
+        totalSum =0;
+    total.textContent = totalSum;
+    numPersons.addEventListener('input', function(){
+        personsSum = +this.value;
+        totalSum = personsSum*daysSum*100;
+        if (numDays !=''){
+            total.textContent = totalSum; 
+        }else{
+            total.textContent = '0';
+            totalSum = 0;
+        }
+        
+    });
+    numDays.addEventListener('input', function(){
+        daysSum = +this.value;
+        totalSum = totalSum = personsSum*daysSum*100;
+        if (numPersons!=''){
+            total.textContent = totalSum; 
+        }else{
+            total.textContent = '0';
+            totalSum = 0;
+        }
+
+    });
+    selector.addEventListener('change', function(){
+        if (numPersons !='' && numDays !=''){
+            let tot;
+            tot = +this.options[this.selectedIndex].value*totalSum;
+            total.textContent = tot;
+        }else{
+            totalSum = 0;
+            total.textContent = '0';
+        }
+    });
+
     //modal
     let modal =  document.querySelector('.overlay'),
     Xclose = document.querySelector('.popup-close'),
@@ -13,7 +68,7 @@ window.addEventListener('DOMContentLoaded',function(){
     moreBTN.addEventListener('click', function(){
     modal.style.display = 'block';
     this.classList.add('more-splash');
-    //document.body.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
     });
     Xclose.addEventListener('click', function(){
     modal.style.display = 'none';
@@ -21,6 +76,7 @@ window.addEventListener('DOMContentLoaded',function(){
     //document.body.style.overflow = '';
     });
 
+    // send forms to server 
     let mainForm = document.querySelector('.main-form'),
         form = document.getElementById('form'),
         inputs = document.querySelectorAll('input'),
@@ -29,6 +85,8 @@ window.addEventListener('DOMContentLoaded',function(){
     postToServer(mainForm, inputs, statusMessage);
     postToServer(form, inputs, statusMessage);
 
+    
+    
 });
 
 // Tabs toggler function
@@ -63,6 +121,41 @@ function toggleTabs(tabs, contents, tabsWrapper){
     });
 }
 
+//slider
+function activateSlider( slides, dotsWrapper,dots, prev, next){
+    let slideIndex = 0;
+    showSlides(slideIndex);
+    prev.addEventListener('click', () => { moveByN(-1); });
+    next.addEventListener('click', () => { moveByN(1); });
+    dotsWrapper.addEventListener('click', function(event){
+        for (let i=0; i<dots.length; i++){
+            if (event.target == dots[i] && event.target.classList.contains('dot')){
+                moveToSlide(i);
+            } 
+        }
+    });
+
+    function showSlides(index){
+        console.log(slides.length);
+        if (index > slides.length-1){slideIndex = 0;}
+        if (index < 0){slideIndex = slides.length-1;}
+        slides.forEach((element) => element.style.display = 'none');
+        dots.forEach((element) => element.classList.remove('dot-active'));
+        slides[slideIndex].style.display = 'block';
+        dots[slideIndex].classList.add('dot-active');
+
+    }
+    function moveByN(n){
+        showSlides(slideIndex+=n);
+        
+    }
+    function moveToSlide(index){
+        slideIndex = index;
+        showSlides(index);
+        
+    }
+}
+
 // Timer function
 'use strict';
 let deadline = '2020-08-09';
@@ -82,7 +175,7 @@ function calcTime(endtime){
         minutes: mins,
         hours: hours,
         days: days
-    }
+    };
     return timeData;
 
 }
