@@ -1,4 +1,7 @@
-function settClockk(){
+    
+function settclockk(id, endtime){
+    console.log('jujujujuj');
+    setClock(id, endtime);
     function calcTime(endtime){
         let milsec = Date.parse(endtime) - Date.parse(new Date()),
             secs = 0, mins = 0, hours = 0, days = 0;
@@ -20,13 +23,15 @@ function settClockk(){
     }
     
     function setClock(id, endtime){
+        console.log('inside setclock function');
         let t = document.getElementById(id),
             seconds = t.querySelector('.seconds'),
             minutes = t.querySelector('.minutes'),
             hours = t.querySelector('.hours'),
             days = t.querySelector('.days');
         if (calcTime(endtime).milliseconds>1000){
-            let timeInterval = setInterval(updateClock, 1000);
+             setInterval(updateClock, 1000);
+            
             
         }else {
             updateClock();
@@ -45,10 +50,9 @@ function settClockk(){
             }else {return num;}
         }
     }
-    return setClock;
     
 }
 
-module.exports = settClockk;
+module.exports = settclockk;
 
 

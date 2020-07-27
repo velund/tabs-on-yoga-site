@@ -1,9 +1,9 @@
-let modalOpener = require('./modal.js'),
-    postToServer = require('./formToServerPost'),
-    setClock = require('./timerFromNowToDeadL.js'),
-    toggleTabs = require('./toglleTabs'),
-    activateSlider = require('./slider'),
-    showCalcPrice = require('./priceCalculator');
+const modalOpener = require('./myModules/modal.js'),
+    postToServer = require('./myModules/formToServerPost'),
+    setClock = require('./myModules/timerFromNowToDeadL.js'),
+    toggleTabs = require('./myModules/toglleTabs'),
+    activateSlider = require('./myModules/slider'),
+    showCalcPrice = require('./myModules/priceCalculator');
 
 
 // $(document).ready...
@@ -17,7 +17,7 @@ window.addEventListener('DOMContentLoaded',function(){
     toggleTabs(Tabs, TabsContents, TabsWrapper);
 
     //timer
-    let deadline = '2020-08-09';
+    const deadline = '2020-10-09';
     setClock('timer', deadline);
 
     // slider
